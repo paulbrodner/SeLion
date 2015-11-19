@@ -15,6 +15,7 @@
 
 package com.paypal.selion.grid.servlets.transfer;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -25,9 +26,9 @@ import java.util.TreeMap;
  */
 public class UploadedArtifact {
 
-    private Map<String, String> artifactMetaInfo;
+    private final Map<String, String> artifactMetaInfo;
 
-    private byte[] artifactContents;
+    private final byte[] artifactContents;
 
     private UploadedArtifact(byte[] artifactContents) {
         super();
@@ -50,7 +51,7 @@ public class UploadedArtifact {
      * @return the artifactContents
      */
     public byte[] getArtifactContents() {
-        return artifactContents;
+        return Arrays.copyOf(artifactContents, artifactContents.length);
     }
 
     /**

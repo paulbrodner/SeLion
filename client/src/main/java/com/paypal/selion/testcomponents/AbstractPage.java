@@ -24,14 +24,14 @@ import java.util.Queue;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.paypal.selion.configuration.Config.ConfigProperty;
 import com.paypal.selion.configuration.ConfigManager;
 import com.paypal.selion.configuration.LocalConfig;
-import com.paypal.selion.configuration.Config.ConfigProperty;
-import com.paypal.selion.platform.grid.AbstractTestSession;
+import com.paypal.selion.internal.platform.grid.AbstractTestSession;
+import com.paypal.selion.internal.platform.pageyaml.GuiMapReader;
+import com.paypal.selion.internal.platform.pageyaml.GuiMapReaderFactory;
 import com.paypal.selion.platform.grid.Grid;
 import com.paypal.selion.platform.html.WebPage;
-import com.paypal.selion.platform.web.GuiMapReader;
-import com.paypal.selion.platform.web.GuiMapReaderFactory;
 
 public abstract class AbstractPage implements WebPage {
 
@@ -40,7 +40,7 @@ public abstract class AbstractPage implements WebPage {
     private boolean pageInitialized;
     // Object map queue for loading
     /** The map queue. */
-    private Queue<String[]> mapQueue;
+    private final Queue<String[]> mapQueue;
     // used to determine our locale (e.g. US, UK, DE, etc.)
     /** The site. */
     private String site;
@@ -54,10 +54,10 @@ public abstract class AbstractPage implements WebPage {
     private static final String UNKNOWN_PAGE_TITLE = "unknown-title";
 
     /** The elements that should be present on the Page **/
-    private List<String> pageValidators = new ArrayList<String>();
+    private final List<String> pageValidators = new ArrayList<String>();
 
     /** Map to store our GUI object map content for all Containers */
-    private Map<String, Map<String, String>> objectContainerMap = new HashMap<String, Map<String, String>>();
+    private final Map<String, Map<String, String>> objectContainerMap = new HashMap<String, Map<String, String>>();
 
     protected void setPageInitialized(boolean pageInitialized) {
         this.pageInitialized = pageInitialized;
@@ -167,11 +167,6 @@ public abstract class AbstractPage implements WebPage {
         pageInitialized = true;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.paypal.selion.platform.html.WebPage#initPage(java.lang.String, java.lang.String, java.lang.String)
-     */
     public void initPage(String pageDomain, String pageClassName, String siteLocale) {
         initPage(pageDomain, pageClassName);
         site = siteLocale;
@@ -181,23 +176,19 @@ public abstract class AbstractPage implements WebPage {
         return pageInitialized;
     }
 
-    @Override
     public String getExpectedPageTitle() {
         throw new UnsupportedOperationException("This operation is NOT supported.");
     }
 
-    @Override
     public String getSiteLocale() {
         return site;
     }
 
-    @Override
     public void validatePage() {
         throw new UnsupportedOperationException("This operation is NOT supported.");
     }
 
-    @Override
-    public boolean isCurrentPageInBrowser() {
+    public boolean isPageValidated() {
         throw new UnsupportedOperationException("This operation is NOT supported.");
     }
 

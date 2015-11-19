@@ -20,9 +20,6 @@ package com.paypal.selion.platform.html;
  */
 public class PageValidationException extends RuntimeException {
 
-    /**
-	 * 
-	 */
     private static final long serialVersionUID = 2293610118186851226L;
 
     public PageValidationException(String msg) {

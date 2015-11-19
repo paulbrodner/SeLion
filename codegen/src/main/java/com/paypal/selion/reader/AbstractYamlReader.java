@@ -32,15 +32,15 @@ import com.paypal.selion.plugins.TestPlatform;
  */
 //TODO Merge this with "clients" version of a class by the same name.. Move merged result to "common"
 public abstract class AbstractYamlReader {
-    private Yaml yaml = null;
-    private boolean processed = false;
+    private Yaml yaml;
+    private boolean processed;
     private String baseClassName;
     private TestPlatform platform;
 
     public static final String KEY = "Key";
     public static final String DELIMITER = "#";
 
-    private List<String> allkeys = new ArrayList<>();
+    private final List<String> allkeys = new ArrayList<>();
 
     final Yaml getYaml() {
         if (this.yaml == null) {
@@ -91,7 +91,7 @@ public abstract class AbstractYamlReader {
             Map<String, Object> elementMap = (Map<String, Object>) element;
             try {
                 String elementKey = ((String) elementMap.get(KEY)).trim();
-                if (elementKey.equals("")) {
+                if ("".equals(elementKey)) {
                     continue;
                 }
 

@@ -5,7 +5,7 @@
 
     <groupId>com.paypal.selion</groupId>
     <artifactId>SeLion-Parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>SeLion Parent POM</name>
     <description>The SeLion Parent POM</description>
@@ -15,10 +15,10 @@
         <compileSource>1.7</compileSource>
         <skipTests>false</skipTests>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <selenium.version>2.47.1</selenium.version>
+        <selenium.version>2.48.2</selenium.version>
         <iosdriver.version>0.6.5</iosdriver.version>
-        <selendroid.version>0.16.0</selendroid.version>
-        <appium.version>3.1.0</appium.version>
+        <selendroid.version>0.17.0</selendroid.version>
+        <appium.version>3.2.0</appium.version>
         <testng.version>6.9.6</testng.version>
         <snakeyaml.version>1.15</snakeyaml.version>
         <project.bom.version>${project.version}</project.bom.version>
@@ -132,6 +132,27 @@
             <properties>
                 <javadoc.opts>-Xdoclint:none</javadoc.opts>
             </properties>
+        </profile>
+        <profile>
+            <id>sign</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 

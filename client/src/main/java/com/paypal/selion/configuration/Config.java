@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-15 PayPal                                                                                       |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -30,9 +30,11 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.ISuite;
 import org.testng.ITestContext;
 
+import com.paypal.selion.configuration.ConfigManager;
+import com.paypal.selion.configuration.LocalConfig;
+import com.paypal.selion.internal.platform.grid.MobileNodeType;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.grid.EventListener;
-import com.paypal.selion.platform.grid.MobileNodeType;
 import com.paypal.selion.platform.grid.browsercapabilities.DefaultCapabilitiesBuilder;
 import com.paypal.selion.platform.html.support.events.ElementEventListener;
 
@@ -95,7 +97,7 @@ import com.paypal.selion.platform.html.support.events.ElementEventListener;
  * </ol>
  */
 public final class Config {
-    private static volatile XMLConfiguration config = null;
+    private static volatile XMLConfiguration config;
 
     private Config() {
         // Utility class. So hide the constructor
@@ -408,6 +410,12 @@ public final class Config {
         SELENIUM_IEDRIVER_PATH("ieDriverPath", "", true),
 
         /**
+         * The path to the EdgeDriver executable on the local machine. This parameter is taken into consideration for
+         * local runs involving the Edge browser.
+         */
+        SELENIUM_EDGEDRIVER_PATH("edgeDriverPath", "", true),
+
+        /**
          * Use this parameter to set the user agent for firefox when working with Mobile version. This parameter should
          * be set in conjunction with the parameter {@link ConfigProperty#BROWSER}
          */
@@ -424,9 +432,9 @@ public final class Config {
         SELENIUM_PROXY_PORT("proxyServerPort", "", true),
 
         /**
-         * Use this parameter to indicate if your remote runs are to be run against the sauce lab grid or against the QI
-         * owned grid/your own grid. This flag is required because when running against Sauce lab furnished grid, we are
-         * to ensure that fetching of WebDriver node IP and Port is to be disabled.
+         * Use this parameter to indicate if your remote runs are to be run against the sauce lab grid or against your 
+         * own grid. This flag is required when running against the Sauce lab grid because we need to disable fetching 
+         * of the WebDriver node IP and Port details.
          */
         SELENIUM_USE_SAUCELAB_GRID("useSauceLabGrid", "false", true),
 
@@ -561,7 +569,7 @@ public final class Config {
 
         /**
          * platform is specified by user.<br>
-         * Default is set to <b>XP</b> Supporting values are: ANDROID, ANY, LINUX, MAC, UNIX, VISTA, WINDOWS, XP.
+         * Default is set to <b>ANY</b> Supporting values are: ANDROID, ANY, LINUX, MAC, UNIX, VISTA, WINDOWS, XP.
          */
         BROWSER_CAPABILITY_PLATFORM("platform", "ANY", false),
 
@@ -662,8 +670,8 @@ public final class Config {
          */
         SELENDROID_SERVER_START_TIMEOUT("serverStartTimeout", "20000", false);
 
-        private String name = null;
-        private String defaultValue = null;
+        private String name;
+        private String defaultValue;
         private boolean isGlobalScopeOnly;
 
         private ConfigProperty(String name, String defaultValue, boolean globalScopeOnly) {

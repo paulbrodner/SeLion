@@ -30,7 +30,7 @@ import com.paypal.selion.internal.reports.model.BaseLog;
 import com.paypal.selion.internal.reports.model.PageContents;
 import com.paypal.selion.logger.SeLionLogger;
 import com.paypal.selion.platform.grid.Grid;
-import com.paypal.selion.reports.reporter.services.LogAction;
+import com.paypal.selion.reports.services.LogAction;
 import com.paypal.test.utilities.logging.SimpleLogger;
 
 /**
@@ -42,8 +42,8 @@ public final class SeLionReporter {
     private volatile static List<LogAction> actionList = new ArrayList<LogAction>();
 
     private static String output;
-    private static DataSaver saver = null;
-    private String baseFileName = UUID.randomUUID().toString();
+    private static DataSaver saver;
+    private final String baseFileName = UUID.randomUUID().toString();
 
     private BaseLog currentLog;
 

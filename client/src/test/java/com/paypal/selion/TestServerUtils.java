@@ -17,8 +17,8 @@ package com.paypal.selion;
 
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
-import org.seleniumhq.jetty7.server.Server;
-import org.seleniumhq.jetty7.server.handler.ResourceHandler;
+import org.seleniumhq.jetty9.server.Server;
+import org.seleniumhq.jetty9.server.handler.ResourceHandler;
 
 import com.paypal.selion.configuration.Config;
 import com.paypal.selion.configuration.Config.ConfigProperty;
@@ -38,7 +38,7 @@ public class TestServerUtils {
     private static final int lowerBoundConnectPort = 10000;
     private static final int upperBoundConnectPort = 14000;
 
-    private static int serverPort = 0;
+    private static int serverPort;
     private static String localIP;
     private static Server server;
 

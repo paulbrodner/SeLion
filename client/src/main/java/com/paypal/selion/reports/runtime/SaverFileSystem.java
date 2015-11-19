@@ -32,11 +32,11 @@ import com.paypal.test.utilities.logging.SimpleLogger;
 /**
  * {@link DataSaver} that stores the info on the file system.
  */
-public class SaverFileSystem implements DataSaver {
+class SaverFileSystem implements DataSaver {
 
     private static SimpleLogger logger = SeLionLogger.getLogger();
 
-    private String outputFolder;
+    private final String outputFolder;
 
     public SaverFileSystem(String testNGOutputFolder) {
         this.outputFolder = testNGOutputFolder;

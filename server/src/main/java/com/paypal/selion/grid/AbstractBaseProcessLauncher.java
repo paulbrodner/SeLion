@@ -59,8 +59,8 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
 
     private DefaultExecuteResultHandler handler;
     private ProcessLauncherOptions launcherOptions;
-    private boolean shutdownCalled = false;
-    private SeLionExecuteWatchDog watchdog = new SeLionExecuteWatchDog(ExecuteWatchdog.INFINITE_TIMEOUT);
+    private boolean shutdownCalled;
+    private final SeLionExecuteWatchDog watchdog = new SeLionExecuteWatchDog(ExecuteWatchdog.INFINITE_TIMEOUT);
 
     /*
      * The command line to run
@@ -75,7 +75,7 @@ abstract class AbstractBaseProcessLauncher extends AbstractBaseLauncher {
     }
 
     class SeLionExecuteWatchDog extends ExecuteWatchdog {
-        boolean starting = false;
+        boolean starting;
         Process process;
 
         SeLionExecuteWatchDog(long timeout) {

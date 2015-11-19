@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpStatus;
 import org.openqa.grid.internal.Registry;
 import org.openqa.grid.internal.RemoteProxy;
@@ -35,6 +36,7 @@ import org.openqa.grid.web.servlet.RegistryBasedServlet;
 
 import com.paypal.selion.logging.SeLionGridLogger;
 import com.paypal.selion.node.servlets.NodeAutoUpgradeServlet;
+import com.paypal.selion.node.servlets.NodeForceRestartServlet;
 import com.paypal.selion.pojos.SeLionGridConstants;
 import com.paypal.selion.proxy.SeLionRemoteProxy;
 import com.paypal.selion.utils.ServletHelper;
@@ -51,10 +53,18 @@ import com.paypal.selion.utils.ServletHelper;
  * </ul>
  * <br>
  * Requires the hub to also have {@link LoginServlet} available. Furthermore, only nodes which use
- * {@link SeLionRemoteProxy} AND {@link NodeAutoUpgradeServlet} or implement support for the HTTP request
- * <b>/extra/NodeAutoUpgradeServlet</b> are compatible.
+ * {@link SeLionRemoteProxy}, {@link NodeAutoUpgradeServlet}, and {@link NodeForceRestartServlet} or implement support
+ * for the HTTP requests <b>/extra/NodeAutoUpgradeServlet</b> and <b>/extra/NodeForceRestartServlet</b> are compatible.<br>
+ * <br>
+ * If there isn't a process, such as SeLion's Grid with <i>continuousRestart</i> on, monitoring and restarting the node
+ * on exit(), the node will be shutdown but not restarted.
  */
 public class GridAutoUpgradeDelegateServlet extends RegistryBasedServlet {
+
+    /**
+     * Resource path to the grid auto upgrade html template file
+     */
+    public static final String RESOURCE_PAGE_FILE = "/com/paypal/selion/html/gridAutoUpgradeDelegateServlet.html";
 
     private static final SeLionGridLogger LOGGER = SeLionGridLogger.getLogger(GridAutoUpgradeDelegateServlet.class);
     private static final String IDS = "ids";
@@ -117,14 +127,11 @@ public class GridAutoUpgradeDelegateServlet extends RegistryBasedServlet {
             if (idList == null) {
                 // there were no nodes that failed to auto upgrade
                 for (RemoteProxy eachProxy : this.getRegistry().getAllProxies()) {
-                    // TODO :: Address the assumption here that any node which uses SeLionRemoteProxy also has
-                    // NodeAutoUpgradeServlet available. Without truth in this assumption, the call to
-                    // proxy.release() will do nothing.
                     if (eachProxy == null) {
                         continue;
                     }
-                    if (eachProxy instanceof SeLionRemoteProxy) {
-                        if (!((SeLionRemoteProxy) eachProxy).release(downloadJSON)) {
+                    if ((eachProxy instanceof SeLionRemoteProxy) && (((SeLionRemoteProxy) eachProxy).supportsAutoUpgrade())) {
+                        if (!((SeLionRemoteProxy) eachProxy).upgradeNode(downloadJSON)) {
                             pendingProxy.add(eachProxy.getId());
                         }
                     } else {
@@ -135,16 +142,14 @@ public class GridAutoUpgradeDelegateServlet extends RegistryBasedServlet {
                 // hmm.. there were one or more nodes that didn't go through
                 // with the upgrade (maybe because they were processing some tests).
                 for (String eachId : idList.split(",")) {
-                    // TODO :: Address the assumption here that any node which uses SeLionRemoteProxy also has
-                    // NodeAutoUpgradeServlet available. Without truth in this assumption, the call to
-                    // proxy.release() will do nothing.
+
                     if (!eachId.trim().isEmpty()) {
                         RemoteProxy proxy = getRegistry().getProxyById(eachId.trim());
                         if (proxy == null) {
                             continue;
                         }
-                        if (proxy instanceof SeLionRemoteProxy) {
-                            if (!((SeLionRemoteProxy) proxy).release(downloadJSON)) {
+                        if ((proxy instanceof SeLionRemoteProxy) && (((SeLionRemoteProxy) proxy).supportsAutoUpgrade())) {
+                            if (!((SeLionRemoteProxy) proxy).upgradeNode(downloadJSON)) {
                                 pendingProxy.add(proxy.getId());
                             }
                         } else {
@@ -164,7 +169,8 @@ public class GridAutoUpgradeDelegateServlet extends RegistryBasedServlet {
                 for (String temp : pendingProxy) {
                     ids = ids + temp + ",";
                 }
-                writer.write("The following nodes were not auto upgraded: " + ids.substring(0, ids.length() - 2));
+                ids = StringUtils.chop(ids);
+                writer.write("The following nodes were not auto upgraded: " + ids);
                 writer.write("<br>Click the Submit button to retry.");
                 writer.write("<input type='hidden' name='" + IDS + "' value='" + ids + "'>");
                 writer.write("<input type='hidden' name='" + PARAM_JSON + "' value='" + downloadJSON + "'>");
@@ -193,7 +199,7 @@ public class GridAutoUpgradeDelegateServlet extends RegistryBasedServlet {
         }
 
         String template = IOUtils.toString(
-                this.getClass().getResourceAsStream(SeLionGridConstants.GRID_AUTO_UPGRADE_PAGE_RESOURCE), "UTF-8");
+                this.getClass().getResourceAsStream(RESOURCE_PAGE_FILE), "UTF-8");
 
         // Format the template with servlet name and download json values
         writer.write(String.format(template, GridAutoUpgradeDelegateServlet.class.getSimpleName(), downloadJSON));

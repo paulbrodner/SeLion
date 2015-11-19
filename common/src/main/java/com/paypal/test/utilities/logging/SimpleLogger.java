@@ -134,7 +134,7 @@ public final class SimpleLogger extends Logger implements Closeable {
     private static final String LOGGER_NAME = SimpleLogger.class.getCanonicalName();
     private static final String CLASS_NAME = SimpleLogger.class.getSimpleName();
 
-    private SimpleLoggerSettings loggerSettings = null;
+    private SimpleLoggerSettings loggerSettings;
     private static volatile Map<String, SimpleLogger> simpleLoggerMap;
     static {
         simpleLoggerMap = new ConcurrentHashMap<String, SimpleLogger>();
@@ -349,7 +349,7 @@ public final class SimpleLogger extends Logger implements Closeable {
      * @param params
      *            varargs
      */
-    public void entering(Object[] params) {
+    public void entering(Object... params) {
         if (this.isLoggable(Level.FINER)) {
             FrameInfo fi = getLoggingFrame();
             getLogger().entering(fi.className, fi.methodName, params);
@@ -385,7 +385,7 @@ public final class SimpleLogger extends Logger implements Closeable {
      * @param params
      *            return values
      */
-    public void exiting(Object[] params) {
+    public void exiting(Object... params) {
         if (this.isLoggable(Level.FINER)) {
             FrameInfo fi = getLoggingFrame();
             String msg = "RETURN";
@@ -424,10 +424,10 @@ public final class SimpleLogger extends Logger implements Closeable {
     }
 
     @Override
-    public void log(Level level, String msg, Object param1) {
+    public void log(Level level, String msg, Object param) {
         if (this.isLoggable(level)) {
             FrameInfo fi = getLoggingFrame();
-            getLogger().logp(level, fi.className, fi.methodName, msg, param1);
+            getLogger().logp(level, fi.className, fi.methodName, msg, param);
         }
     }
 
@@ -538,8 +538,8 @@ public final class SimpleLogger extends Logger implements Closeable {
      */
     private FrameInfo getLoggingFrame() {
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        StackTraceElement loggingFrame = null;
-        String loggingFrameClassName = null;
+        StackTraceElement loggingFrame = stackTrace[0];
+        String loggingFrameClassName;
         /*
          * We need to dig through all the frames until we get to a frame that contains this class, then dig through all
          * frames for this class, to finally come to a point where we have the frame for the calling method.
@@ -602,8 +602,8 @@ public final class SimpleLogger extends Logger implements Closeable {
      * Used to encapsulate class and method info from the stack trace
      */
     private final class FrameInfo {
-        private String className;
-        private String methodName;
+        private final String className;
+        private final String methodName;
 
         private FrameInfo(String className, String methodName) {
             this.className = className;
@@ -648,10 +648,11 @@ public final class SimpleLogger extends Logger implements Closeable {
      */
     public final class SingleLineFormatter extends Formatter {
         private final String LINE_SEPARATOR = System.getProperty("line.separator");
-        private Format df = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss.SSS");
-        private String identifier = null;
+        private final Format df = new SimpleDateFormat("MM.dd.yyyy HH:mm:ss.SSS");
+        private final String identifier;
 
         public SingleLineFormatter(String identifier) {
+            super();
             this.identifier = identifier;
         }
 

@@ -63,11 +63,11 @@ public class WebDriverSessionHandler {
 
     private static SimpleLogger logger = SeLionLogger.getLogger();
 
-    private RemoteWebDriver driver;
+    private final RemoteWebDriver driver;
     private Future<String> result;
-    private WebDriverCaller webDriverCaller;
+    private final WebDriverCaller webDriverCaller;
 
-    private volatile boolean bStartSession = false;
+    private volatile boolean bStartSession;
 
     private class WebDriverCaller implements Callable<String> {
 
@@ -80,10 +80,10 @@ public class WebDriverSessionHandler {
                     Thread.sleep(1000 * 10);
                 }
             } catch (InterruptedException e) {
-                logger.exiting(null);
+                logger.exiting(new Object[] {null});
                 return null;
             }
-            logger.exiting(null);
+            logger.exiting(new Object[] {null});
             return null;
         }
     }

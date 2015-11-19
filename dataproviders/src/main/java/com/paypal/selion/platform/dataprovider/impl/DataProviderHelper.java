@@ -48,7 +48,6 @@ import com.paypal.test.utilities.logging.SimpleLogger;
  * {@link ExcelDataProviderImpl} and {@link YamlDataProviderImpl} and {@link XmlDataProviderImpl}.
  * 
  */
-// TODO: This should perhaps be moved into an internal package because this internal class now is exposed outside.
 public final class DataProviderHelper {
 
     private static SimpleLogger logger = SeLionLogger.getLogger();
@@ -104,7 +103,7 @@ public final class DataProviderHelper {
      * Converts any object into 2 dimensional array representing TestNG DataProvider.
      *
      * Following are the results for various types represented by {@code object}, in the order the {@code object} is
-     * processed :-
+     * processed:
      *
      * <pre>
      * Object - By default, an object is returned at position [0][0] of Object[1][1].
@@ -559,7 +558,7 @@ public final class DataProviderHelper {
      * Use this utility method to print and return a yaml string to help serialize the object passed in.
      *
      * @param object
-     *            - The Object that is to be serialised.
+     *            The Object that is to be serialised.
      * @return a yaml string representation of the object passed in
      */
     public static String serializeObjectToYamlString(Object object) {
@@ -688,7 +687,7 @@ public final class DataProviderHelper {
             i++;
         }
 
-        logger.exiting(data);
+        logger.exiting((Object[]) data);
         return data;
     }
 }

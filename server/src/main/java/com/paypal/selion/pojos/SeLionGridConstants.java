@@ -39,10 +39,6 @@ import static com.paypal.selion.SeLionConstants.*;
  */
 public class SeLionGridConstants {
 
-    private SeLionGridConstants() {
-        // Restricting Object creation
-    }
-
     private static final String PLATFORM_RESOURCE_DIR = SystemUtils.IS_OS_WINDOWS ? "windows/" : "unix/";
 
     /**
@@ -82,24 +78,9 @@ public class SeLionGridConstants {
     public static final String GRID_HOME_PAGE_URL = GRID_PAGES_URL_PATH_PREFIX + "gridHomePage.html";
 
     /**
-     * Resource path to the password change html template file
-     */
-    public static final String PASSWORD_CHANGE_PAGE_RESOURCE = "/pages/changePageGetDetails.html";
-
-    /**
-     * Resource path to the grid auto upgrade html template file
-     */
-    public static final String GRID_AUTO_UPGRADE_PAGE_RESOURCE = "/pages/gridAutoUpgradePage.html";
-
-    /**
      * URL to the SeLion sauce grid home page
      */
     public static final String SAUCE_GRID_HOMEPAGE_URL = GRID_PAGES_URL_PATH_PREFIX + "sauceGridHomePage.html";
-
-    /**
-     * Resource path to the sauce config html file
-     */
-    public static final String SAUCE_CONFIG_UPDATE_PAGE_RESOURCE = "/pages/updateSauceConfigPage.html";
 
     /**
      * Resource path to the default SeLionConfig.json file
@@ -202,4 +183,8 @@ public class SeLionGridConstants {
      * Dash argument for disabling continuous restart nature of any {@link RunnableLauncher} which spawns a new process
      */
     public static final String SELION_NOCONTINUOUS_ARG = "-noContinuousRestart";
+
+    private SeLionGridConstants() {
+        // Restricting Object creation
+    }
 }

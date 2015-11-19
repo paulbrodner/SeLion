@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.attribute.FileTime;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -52,15 +53,15 @@ public class DefaultManagedArtifact implements ManagedArtifact {
     private static final String REPO_ABSOLUTE_PATH =
             ManagedArtifactRepository.getInstance().getRepositoryFolder().getAbsolutePath();
 
-    private File artifactFile = null;
+    private File artifactFile;
 
-    private String artifactName = null;
+    private String artifactName;
 
-    private String subFolderName = null;
+    private String subFolderName;
 
-    private String uidFolderName = null;
+    private String uidFolderName;
 
-    private byte[] contents = null;
+    private byte[] contents;
 
     private static final long timeToLiveInMillis = ConfigParser.parse().getLong(EXPIRY_CONFIG_PROPERTY);
 
@@ -177,7 +178,7 @@ public class DefaultManagedArtifact implements ManagedArtifact {
         if (contents == null) {
             readContents();
         }
-        return contents;
+        return Arrays.copyOf(contents, contents.length);
     }
 
     public boolean matchesPathInfo(String pathInfo) {
@@ -219,10 +220,7 @@ public class DefaultManagedArtifact implements ManagedArtifact {
         if (!getSubFolderName().equals(otherManagedArtifact.getSubFolderName())) {
             return false;
         }
-        if (!getUIDFolderName().equals(otherManagedArtifact.getUIDFolderName())) {
-            return false;
-        }
-        return true;
+        return getUIDFolderName().equals(otherManagedArtifact.getUIDFolderName());
     }
 
     @Override

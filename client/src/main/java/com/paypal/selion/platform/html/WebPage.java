@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2015 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,8 +15,13 @@
 
 package com.paypal.selion.platform.html;
 
+import com.paypal.selion.testcomponents.BasicPageImpl;
+
 /**
- * A generic interface for Web Page Objects in SeLion.
+ * A generic interface for web Page Objects in SeLion.<br>
+ * <br>
+ * Note: "web" is used loosely here. This interface can also be implemented to support mobile applications as is the
+ * case with {@link BasicPageImpl}
  * 
  */
 public interface WebPage {
@@ -25,7 +30,9 @@ public interface WebPage {
      * Initialize the page by it's name and page path
      * 
      * @param pagePath
+     *            the path
      * @param pageClassName
+     *            the class name
      */
     void initPage(String pagePath, String pageClassName);
 
@@ -33,43 +40,48 @@ public interface WebPage {
      * Initialize the page by it's name, page path, and site locale
      * 
      * @param pagePath
+     *            the path
      * @param pageClassName
+     *            the class name
      * @param siteLocale
+     *            the locale to use
      */
     void initPage(String pagePath, String pageClassName, String siteLocale);
 
     /**
-     * Return initialization state
+     * @return initialization state
      */
     boolean isInitialized();
 
     /**
-     * Return the expected page title for this page
+     * @return the expected page title for this page
      */
     String getExpectedPageTitle();
 
     /**
-     * Return the current siteLocale setting for this page
+     * @return the current siteLocale setting for this page
      */
     String getSiteLocale();
 
     /**
-     * Return the WebPage object
-     * 
-     * @return a {@link WebPage}
+     * @return a {@link WebPage} object
      */
     WebPage getPage();
 
     /**
-     * Validates if the page is loaded in the browser
+     * Validates the page against the defined <code>pageValidators</code> defined in the PageYAML for this page.
+     * 
+     * @throws PageValidationException
+     *             when the page does not validate.
      */
     void validatePage();
 
     /**
-     * Returns if page is opened in the browser. Use {@link WebPage#validatePage()} if you want to validate if a page is
-     * loaded.
+     * Returns the outcome of calling {@link WebPage#validatePage()} to validate the loaded page on the WebDriver
+     * session.
      * 
-     * @return if page is opened
+     * @return <code>true</code> or <code>false</code>, if the page is validated, meaning all
+     *         <code>pageValidators</code> pass
      */
-    boolean isCurrentPageInBrowser();
+    boolean isPageValidated();
 }

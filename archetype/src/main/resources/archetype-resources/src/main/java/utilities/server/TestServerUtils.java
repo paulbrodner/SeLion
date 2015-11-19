@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------------------------------------------------*\
-|  Copyright (C) 2014 PayPal                                                                                          |
+|  Copyright (C) 2014-2015 PayPal                                                                                     |
 |                                                                                                                     |
 |  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance     |
 |  with the License.                                                                                                  |
@@ -15,8 +15,8 @@
 
 package ${package}.utilities.server;
 
-import org.seleniumhq.jetty7.server.Server;
-import org.seleniumhq.jetty7.server.handler.ResourceHandler;
+import org.seleniumhq.jetty9.server.Server;
+import org.seleniumhq.jetty9.server.handler.ResourceHandler;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 
@@ -30,7 +30,7 @@ import ${package}.logging.AppLogger;
  */
 public class TestServerUtils {
 
-    static int serverPort = 0;
+    static int serverPort;
     static String localIP;
 
     private static String TEST_APP_FILE = "/testapp.html";
